@@ -8,6 +8,7 @@ import joblib
 from rest_framework.views import APIView
 import os
 import pandas as pd
+from .models import PredictionHistory
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -23,7 +24,7 @@ class LogoutView(APIView):
             token = RefreshToken(refresh_token)
             token.blacklist()
             return Response(status=status.HTTP_205_RESET_CONTENT)
-        except Exception as e:
+        except Exception:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class PredictionView(APIView):
@@ -59,8 +60,34 @@ class PredictionView(APIView):
 
             # Make prediction
             prediction = model.predict(input_df)
-            
-            return Response({'prediction': prediction.tolist()})
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+            result = prediction.tolist()[0]
+
+            if result >= 4:
+                nivel = "Muy extrovertido"
+            elif result >= 3:
+                nivel = "Extrovertido"
+            elif result >= 2:
+                nivel = "Neutral"
+            else:
+                nivel = "Introvertido"
+
+            PredictionHistory.objects.create(
+                user=request.user,
+                score=result,
+                prediction=nivel
+            )
+
+            return Response({
+                "status": "success",
+                "personality_prediction": result,
+                "personality_type": nivel,
+                "message": "Predicción realizada correctamente"
+            }, status=status.HTTP_200_OK)
+
+        except Exception:
+
+            return Response({
+                'error': str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
 
