@@ -1,7 +1,7 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from .serializers import RegisterSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 import joblib
@@ -11,7 +11,7 @@ import pandas as pd
 from .models import PredictionHistory
 
 class RegisterView(generics.CreateAPIView):
-    queryset = User.objects.all()
+    queryset = get_user_model().objects.all()
     permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
 

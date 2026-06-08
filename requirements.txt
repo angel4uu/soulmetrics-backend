@@ -6,3 +6,4 @@ gunicorn
 joblib
 scikit-learn
 pandas
+drf-yasg

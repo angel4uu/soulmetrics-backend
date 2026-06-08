@@ -22,4 +22,4 @@ RUN python manage.py collectstatic --noinput
 EXPOSE 8000
 
 # Run server
-CMD ["gunicorn", "tcsm_project.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn", "soulmetrics.wsgi:application", "--bind", "0.0.0.0:8000"]
