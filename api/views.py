@@ -81,7 +81,9 @@ class HistoryView(generics.ListAPIView):
             })
 
         page = self.paginate_queryset(data)
-        return self.get_paginated_response(page)
+        if page is not None:
+            return self.get_paginated_response(page)
+        return Response(data, status=status.HTTP_200_OK)
 
 class ProfileView(APIView):
     permission_classes = (IsAuthenticated,)
