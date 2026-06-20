@@ -1,5 +1,6 @@
 {
     "low": ["Eres flexible y prefieres dejar fluir las cosas.", "A veces te cuesta mantener un orden estricto."],
     "medium": ["Eres organizado cuando es necesario pero valoras la espontaneidad.", "Tienes un equilibrio entre planificación y adaptabilidad."],
-    "high": ["Eres muy organizado, disciplinado y orientado a metas.", "Te gusta planificar y ejecutar las cosas con precisión."]
+    "high": ["Eres muy organizado, disciplinado y orientado a metas.", "Te gusta planificar y ejecutar las cosas con precisión."],
+    "excellent": ["Eres un modelo de disciplina, eficiencia y logro constante.", "Tu capacidad para organizar y ejecutar planes complejos es sobresaliente."]
 }

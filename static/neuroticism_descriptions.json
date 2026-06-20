@@ -1,5 +1,6 @@
 {
     "low": ["Eres emocionalmente estable y manejas bien el estrés.", "Mantienes la calma en situaciones desafiantes."],
     "medium": ["Tienes altibajos emocionales ocasionales.", "Puedes ser sensible pero generalmente te recuperas bien."],
-    "high": ["Eres propenso a preocuparte y sentir emociones intensas.", "A veces te resulta difícil manejar el estrés o la ansiedad."]
+    "high": ["Eres propenso a preocuparte y sentir emociones intensas.", "A veces te resulta difícil manejar el estrés o la ansiedad."],
+    "excellent": ["Tienes una inteligencia emocional asombrosa y una resiliencia inquebrantable ante la adversidad.", "Tu paz interior es profunda y constante, sirviendo de ancla incluso en las situaciones más caóticas."]
 }
