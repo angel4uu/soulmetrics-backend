@@ -25,6 +25,18 @@ class PredictionHistory(models.Model):
     graphics_data = models.JSONField(default=dict)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    @staticmethod
+    def find_intensity(prediction_score):
+        # Assuming score is 1-10
+        if prediction_score >= 8.5:
+            return "excellent"
+        elif prediction_score >= 6:
+            return "high"
+        elif prediction_score >= 3.5:
+            return "medium"
+        else:
+            return "low"
+
 class PersonalityProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     ai_summary = models.TextField()

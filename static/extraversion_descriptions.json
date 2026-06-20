@@ -1,0 +1,5 @@
+{
+    "low": ["Tiendes a ser reservado y disfrutas de la soledad.", "Prefieres entornos tranquilos y actividades introspectivas."],
+    "medium": ["Tienes un equilibrio entre momentos sociales y de soledad.", "Te sientes cómodo en entornos sociales pero no los buscas constantemente."],
+    "high": ["Eres enérgico y disfrutas mucho de la interacción social.", "Te sientes revitalizado al estar rodeado de personas."]
+}
