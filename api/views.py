@@ -74,8 +74,11 @@ class PredictionView(APIView):
 
             PredictionHistory.objects.create(
                 user=request.user,
-                score=result,
-                prediction=nivel
+                predicted_scores={"score": float(result)},
+                trait_descriptions={"level": nivel},
+                answers_data=dict(data),
+                graphics_data={},
+                
             )
 
             return Response({
@@ -85,9 +88,51 @@ class PredictionView(APIView):
                 "message": "Predicción realizada correctamente"
             }, status=status.HTTP_200_OK)
 
-        except Exception:
+        except Exception as e:
 
             return Response({
                 'error': str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
+            
 
+class HistoryView(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = None  # no necesitas serializer aún
+
+    def get(self, request):
+        history = PredictionHistory.objects.filter(user=request.user).order_by('-created_at')
+
+        data = []
+        for h in history:
+            data.append({
+                "id": h.id,
+                "answers_data": h.answers_data,
+                "predicted_scores": h.predicted_scores,
+                "trait_descriptions": h.trait_descriptions,
+                "graphics_data": h.graphics_data,
+                "created_at": h.created_at
+            })
+
+        return Response(data)
+
+class ProfileView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        user = request.user
+        return Response({
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "age": user.age,
+            "occupation": user.occupation
+        })
+
+    def put(self, request):
+        user = request.user
+
+        user.age = request.data.get("age", user.age)
+        user.occupation = request.data.get("occupation", user.occupation)
+        user.save()
+
+        return Response({"message": "Profile updated"})
