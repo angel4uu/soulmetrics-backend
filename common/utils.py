@@ -3,6 +3,11 @@ import random
 import os
 from django.conf import settings
 
+def get_test_questions():
+    file_path = os.path.join(settings.BASE_DIR, 'static', 'test_questions.json')
+    with open(file_path, 'r') as f:
+        return json.load(f)
+
 def get_trait_description(trait_levels):
     """
     Look up description for each trait, aggregate into a single paragraph.

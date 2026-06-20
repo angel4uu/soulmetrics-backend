@@ -7,11 +7,19 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 from .services import PredictionService
 from .models import PredictionHistory
+from common.utils import get_test_questions
 
 class RegisterView(generics.CreateAPIView):
     queryset = get_user_model().objects.all()
     permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
+
+class QuestionsView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        questions = get_test_questions()
+        return Response(questions, status=status.HTTP_200_OK)
 
 class LogoutView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -32,7 +40,7 @@ class PredictionView(APIView):
         serializer = PredictionInputSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
         try:
             service = PredictionService()
             prediction_history = service.get_prediction(request.user, serializer.validated_data)
@@ -50,7 +58,7 @@ class PredictionView(APIView):
             return Response({
                 'error': str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
-            
+
 
 class HistoryView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)

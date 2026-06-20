@@ -5,18 +5,6 @@ class CustomUser(AbstractUser):
     age = models.IntegerField(null=True, blank=True)
     occupation = models.CharField(max_length=255, null=True, blank=True)
 
-class Question(models.Model):
-    CATEGORY_CHOICES = [
-        ("Openness", "Openness"),
-        ("Conscientiousness", "Conscientiousness"),
-        ("Extraversion", "Extraversion"),
-        ("Agreeableness", "Agreeableness"),
-        ("Neuroticism", "Neuroticism"),
-    ]
-    code = models.CharField(max_length=10, unique=True)
-    text = models.TextField()
-    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
-
 class PredictionHistory(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     answers_data = models.JSONField(default=dict)
