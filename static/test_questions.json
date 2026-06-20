@@ -1,0 +1,17 @@
+{
+  "EXT1": {"text": "Soy el alma de la fiesta.", "category": "Extraversion"},
+  "EXT3": {"text": "Me siento cómodo rodeado de gente.", "category": "Extraversion"},
+  "EXT5": {"text": "Inicio conversaciones.", "category": "Extraversion"},
+  "AGR1": {"text": "Siento poca preocupación por los demás.", "category": "Agreeableness"},
+  "AGR3": {"text": "Insulto a la gente.", "category": "Agreeableness"},
+  "AGR5": {"text": "No me interesan los problemas de otras personas.", "category": "Agreeableness"},
+  "CSN1": {"text": "Siempre estoy preparado.", "category": "Conscientiousness"},
+  "CSN3": {"text": "Presto atención a los detalles.", "category": "Conscientiousness"},
+  "CSN5": {"text": "Termino mis tareas de inmediato.", "category": "Conscientiousness"},
+  "EST1": {"text": "Me estreso fácilmente.", "category": "Neuroticism"},
+  "EST3": {"text": "Me preocupo por las cosas.", "category": "Neuroticism"},
+  "EST5": {"text": "Me perturbo fácilmente.", "category": "Neuroticism"},
+  "OPN1": {"text": "Tengo un vocabulario rico.", "category": "Openness"},
+  "OPN3": {"text": "Tengo una imaginación vívida.", "category": "Openness"},
+  "OPN5": {"text": "Tengo ideas excelentes.", "category": "Openness"}
+}

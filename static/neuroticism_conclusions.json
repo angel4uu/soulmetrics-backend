@@ -1,0 +1,18 @@
+{
+    "low": [
+        "Eres emocionalmente estable y manejas el estrés cotidiano con una serenidad admirable, lo que te permite mantener la calma ante diversos desafíos.",
+        "Tu enfoque ante la vida es pausado y resiliente, siendo difícil que factores externos alteren tu equilibrio interno o tu tranquilidad mental."
+    ],
+    "medium": [
+        "Experimentas las emociones con una intensidad moderada y sueles recuperarte bien de los contratiempos, manteniendo una estabilidad sólida en tu día a día.",
+        "Muestras una autoconciencia saludable; reconoces tus altibajos emocionales, lo que te permite gestionarlos de manera efectiva sin afectar tu funcionamiento."
+    ],
+    "high": [
+        "A veces experimentas los retos diarios con mayor sensibilidad, pero cuentas con mecanismos conscientes para autorregularte y encontrar tu centro.",
+        "Eres muy consciente de tus estados emocionales y te encuentras en un proceso activo de fortalecer tu resiliencia ante situaciones de presión."
+    ],
+    "excellent": [
+        "Aunque te enfrentas a desafíos emocionales con frecuencia, tu capacidad de introspección, reflexión y autoconocimiento es profunda y admirable.",
+        "Estás en un camino continuo de crecimiento personal, transformando activamente cada experiencia desafiante en una oportunidad para fortalecer tu estabilidad interior."
+    ]
+}

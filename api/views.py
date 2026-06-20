@@ -2,18 +2,26 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth import get_user_model
-from .serializers import RegisterSerializer
+from .serializers import RegisterSerializer, PredictionInputSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
-import joblib
 from rest_framework.views import APIView
-import os
-import pandas as pd
-from .models import PredictionHistory
+from .services import PredictionService
+from .models import PredictionHistory, PersonalityProfile
+from common.utils import get_test_questions
+from .tasks import update_personality_profile
+from django.utils import timezone
 
 class RegisterView(generics.CreateAPIView):
     queryset = get_user_model().objects.all()
     permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
+
+class QuestionsView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        questions = get_test_questions()
+        return Response(questions, status=status.HTTP_200_OK)
 
 class LogoutView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -31,69 +39,28 @@ class PredictionView(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
+        serializer = PredictionInputSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         try:
-            model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'best_model.pkl')
-            model = joblib.load(model_path)
-            
-            # Extract data from request
-            data = request.data
-            
-            # Define the expected feature columns in the correct order
-            feature_columns = ['EST1', 'EST2', 'EST3', 'EST4','EST5','EST6', 'EST7', 'EST8', 'EST9', 'EST10', 
-                               'AGR1', 'AGR2', 'AGR3', 'AGR4', 'AGR5','AGR6', 'AGR7', 'AGR8', 'AGR9', 'AGR10', 
-                               'CSN1', 'CSN2','CSN3', 'CSN4', 'CSN5','CSN6', 'CSN7', 'CSN8', 'CSN9', 'CSN10', 
-                               'OPN1', 'OPN2', 'OPN3', 'OPN4', 'OPN5','OPN6', 'OPN7', 'OPN8', 'OPN9', 'OPN10', 
-                               'EST1_E','EST2_E', 'EST3_E', 'EST4_E','EST5_E','EST6_E', 'EST7_E', 'EST8_E', 'EST9_E', 'EST10_E', 
-                               'AGR1_E','AGR2_E', 'AGR3_E', 'AGR4_E', 'AGR5_E','AGR6_E', 'AGR7_E', 'AGR8_E','AGR9_E', 'AGR10_E', 
-                               'CSN1_E', 'CSN2_E', 'CSN3_E', 'CSN4_E', 'CSN5_E','CSN6_E', 'CSN7_E', 'CSN8_E', 'CSN9_E', 'CSN10_E', 
-                               'OPN1_E', 'OPN2_E','OPN3_E', 'OPN4_E', 'OPN5_E', 'OPN6_E', 'OPN7_E', 'OPN8_E', 'OPN9_E', 'OPN10_E']            
-            # Create a pandas DataFrame from the input data
-            input_df = pd.DataFrame([data], columns=feature_columns)
-            
-            # Ensure all columns are present, fill missing with 0
-            for col in feature_columns:
-                if col not in input_df.columns:
-                    input_df[col] = 0
-            
-            # Ensure the order of columns matches the training data
-            input_df = input_df[feature_columns]
+            service = PredictionService()
+            prediction_history = service.get_prediction(request.user, serializer.validated_data)
 
-            # Make prediction
-            prediction = model.predict(input_df)
-
-            result = prediction.tolist()[0]
-
-            if result >= 4:
-                nivel = "Muy extrovertido"
-            elif result >= 3:
-                nivel = "Extrovertido"
-            elif result >= 2:
-                nivel = "Neutral"
-            else:
-                nivel = "Introvertido"
-
-            PredictionHistory.objects.create(
-                user=request.user,
-                predicted_scores={"score": float(result)},
-                trait_descriptions={"level": nivel},
-                answers_data=dict(data),
-                graphics_data={},
-                
-            )
 
             return Response({
                 "status": "success",
-                "personality_prediction": result,
-                "personality_type": nivel,
+                "personality_prediction": prediction_history.predicted_scores,
+                "trait_descriptions": prediction_history.trait_descriptions,
+                "graphics_data": prediction_history.graphics_data,
                 "message": "Predicción realizada correctamente"
             }, status=status.HTTP_200_OK)
 
         except Exception as e:
-
             return Response({
                 'error': str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
-            
+
 
 class HistoryView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
@@ -137,3 +104,62 @@ class ProfileView(APIView):
         user.save()
 
         return Response({"message": "Profile updated"})
+
+class PersonalityProfileView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        # 0. TODO: Exec update_personality_profile
+        # TODO: Implement async execution (Celery)
+        update_personality_profile(request.user)
+
+        # 1. Query user related PersonalityProfile
+        try:
+            profile = PersonalityProfile.objects.get(user=request.user)
+
+            # 3. If yes continue
+            # 4. Return has_personality_profile True and PersonalityProfile in expected json structure
+
+            days_active = (timezone.now() - profile.first_test_date).days
+
+            return Response({
+                "id": profile.id,
+                "user_id": profile.user_id,
+                "has_personality_profile": True,
+                "last_updated": profile.updated_at,
+                "report_metadata": {
+                    "total_tests_taken": profile.total_tests_taken,
+                    "first_test_date": profile.first_test_date,
+                    "days_active": days_active,
+                    "primary_dominant_trait": profile.primary_dominant_trait,
+                    "highest_variance_trait": profile.highest_variance_trait
+                },
+                "ai_conclusions": {
+                    "summary": profile.ai_summary,
+                    "trends_analysis": profile.ai_trends_analysis,
+                    "recommendation": profile.ai_recommendation
+                },
+                "traits_conclusions":{
+                    "Openness": profile.openness_conclusions,
+                    "Conscientiousness": profile.conscientiousness_conclusions,
+                    "Extraversion": profile.extraversion_conclusions,
+                    "Agreeableness": profile.agreeableness_conclusions,
+                    "Neuroticism": profile.neuroticism_conclusions
+                },
+                "historical_baselines": {
+                    "first_test_scores": profile.first_test_scores,
+                    "latest_test_scores": profile.latest_test_scores
+                },
+                "graphics_data": profile.historical_graphics_data
+            }, status=status.HTTP_200_OK)
+
+        except PersonalityProfile.DoesNotExist:
+            # 2. if none, return has_personality_profile False and variable with all rest empty fields
+            return Response({
+                "has_personality_profile": False,
+                "report_metadata": {},
+                "ai_conclusions": {},
+                "traits_conclusions": {},
+                "historical_baselines": {},
+                "graphics_data": {}
+            }, status=status.HTTP_200_OK)
