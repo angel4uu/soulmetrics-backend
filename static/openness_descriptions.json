@@ -1,5 +1,6 @@
 {
     "low": ["Prefieres lo conocido y las rutinas tradicionales.", "Valoras la estabilidad y los enfoques prácticos."],
     "medium": ["Estás abierto a nuevas experiencias pero valoras la familiaridad.", "Tienes un interés moderado en ideas nuevas."],
-    "high": ["Eres muy creativo, curioso y abierto a nuevas ideas.", "Disfrutas explorando conceptos abstractos y experiencias diversas."]
+    "high": ["Eres muy creativo, curioso y abierto a nuevas ideas.", "Disfrutas explorando conceptos abstractos y experiencias diversas."],
+    "excellent": ["Tu mente es una fuente inagotable de creatividad, innovación y sabiduría.", "Posees una visión del mundo excepcionalmente amplia y eres capaz de integrar ideas complejas con facilidad."]
 }
