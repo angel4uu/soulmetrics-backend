@@ -8,3 +8,4 @@ joblib
 scikit-learn
 pandas
 drf-yasg
+django-cors-headers
