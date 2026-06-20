@@ -8,6 +8,6 @@ urlpatterns = [
     path('auth/login/refresh/', TokenRefreshView.as_view()),
     path('auth/logout/', LogoutView.as_view()),
     path('predict/', PredictionView.as_view()),
-    path('profile/', ProfileView.as_view(), name='profile'),
+    path('auth/profile/', ProfileView.as_view(), name='profile'),
     path('history/', HistoryView.as_view(), name='history'),
 ]

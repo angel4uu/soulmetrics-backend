@@ -113,7 +113,8 @@ class HistoryView(generics.ListAPIView):
                 "created_at": h.created_at
             })
 
-        return Response(data)
+        page = self.paginate_queryset(data)
+        return self.get_paginated_response(page)
 
 class ProfileView(APIView):
     permission_classes = (IsAuthenticated,)
