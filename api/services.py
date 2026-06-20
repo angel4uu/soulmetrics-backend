@@ -6,13 +6,21 @@ from django.conf import settings
 from .models import PredictionHistory
 from common.utils import get_trait_description
 
-# Load model once at the module level when the worker starts
-model_path = os.path.join(settings.BASE_DIR, "best_model.pkl")
-model = joblib.load(model_path)
+# Cache for the model to ensure it is only loaded once
+_model_cache = None
+
+def _get_model():
+    """Helper to load the model lazily."""
+    global _model_cache
+    if _model_cache is None:
+        model_path = os.path.join(settings.BASE_DIR, "best_model.pkl")
+        _model_cache = joblib.load(model_path)
+    return _model_cache
 
 class PredictionService:
     def execute_model(self, model_params):
-        # Use the already loaded 'model' variable
+        # Load the model lazily
+        model = _get_model()
 
         # Expected features from training (order matters)
         feature_columns = [
