@@ -8,7 +8,7 @@ from common.utils import get_trait_description
 
 class PredictionService:
     def execute_model(self, model_params):
-        # Path to model and scaler
+        # Path to model
         model_path = os.path.join(settings.BASE_DIR, "best_model.pkl")
         model = joblib.load(model_path)
 
@@ -34,8 +34,11 @@ class PredictionService:
         # Ensure correct order and fill missing
         input_vector = [model_params.get(feat, 0) for feat in feature_columns]
 
+        # Reshape to 2D array (1 sample, n features)
+        input_array = np.array(input_vector).reshape(1, -1)
+
         # Make prediction (returns 5 scores)
-        prediction = model.predict(input_vector)[0]
+        prediction = model.predict(input_array)[0]
 
         # Rasgo names
         rasgo_names = ['EXT', 'AGR', 'CSN', 'EST', 'OPN']
@@ -48,6 +51,7 @@ class PredictionService:
             result[rasgo] = round(valor_clamp * 2, 2)
 
         return result
+
 
     def get_prediction(self, user, model_params):
         # 1. execute_model()
