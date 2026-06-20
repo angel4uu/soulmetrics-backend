@@ -10,12 +10,11 @@ from common.utils import get_trait_description
 _model_cache = None
 
 def _get_model():
-    """Helper to load the model lazily with memory mapping."""
+    """Helper to load the model lazily."""
     global _model_cache
     if _model_cache is None:
         model_path = os.path.join(settings.BASE_DIR, "best_model.pkl")
-        # Use mmap_mode="r" to reduce memory footprint by memory-mapping arrays
-        _model_cache = joblib.load(model_path, mmap_mode="r")
+        _model_cache = joblib.load(model_path)
     return _model_cache
 
 class PredictionService:
