@@ -27,11 +27,21 @@ class PredictionHistory(models.Model):
 
 class PersonalityProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    updated_at = models.DateTimeField(auto_now=True)
+    # historical fields
+    first_test_date = models.DateTimeField()
+    first_test_scores = models.JSONField()
+    # updated per prediction fields
+    total_tests_taken = models.IntegerField()
+    primary_dominant_trait = models.CharField(max_length=3)
+    highest_variance_trait = models.CharField(max_length=3)
     ai_summary = models.TextField()
     ai_trends_analysis = models.TextField()
     ai_recommendation = models.TextField()
-    first_test_scores = models.JSONField()
+    openness_conclusions = models.JSONField()
+    conscientiousness_conclusions = models.JSONField()
+    extraversion_conclusions = models.JSONField()
+    agreeableness_conclusions = models.JSONField()
+    neuroticism_conclusions = models.JSONField()
     latest_test_scores = models.JSONField()
     historical_graphics_data = models.JSONField()
-    total_tests_taken = models.IntegerField()
-    updated_at = models.DateTimeField(auto_now=True)

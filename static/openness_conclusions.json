@@ -1,0 +1,18 @@
+{
+    "low": [
+        "Valoras las tradiciones, la estabilidad y los enfoques probados, prefiriendo basar tus decisiones en hechos concretos y experiencias tangibles.",
+        "Tu estilo es pragmático y buscas resultados claros, sintiéndote más cómodo en entornos donde lo conocido ofrece seguridad y predictibilidad."
+    ],
+    "medium": [
+        "Muestras una mezcla equilibrada de curiosidad por lo nuevo y aprecio por lo establecido; estás dispuesto a innovar siempre que tenga un sentido práctico.",
+        "Te adaptas bien a nuevas ideas si percibes su utilidad inmediata, manteniendo un equilibrio entre la tradición y la apertura a cambios moderados."
+    ],
+    "high": [
+        "Eres una persona creativa, curiosa y disfrutas activamente explorando nuevas ideas, conceptos abstractos y experiencias diferentes.",
+        "Posees una mente abierta que busca constantemente aprender y expandir tus horizontes, viendo el cambio como una oportunidad de crecimiento personal."
+    ],
+    "excellent": [
+        "Tu visión del mundo es única, profundamente innovadora y rica en matices; eres capaz de conectar conceptos complejos para generar soluciones originales.",
+        "Tienes una capacidad extraordinaria para integrar información diversa y ver posibilidades donde otros no las ven, impulsando siempre la creatividad en tu entorno."
+    ]
+}

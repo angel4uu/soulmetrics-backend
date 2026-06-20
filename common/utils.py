@@ -48,3 +48,40 @@ def get_trait_description(trait_levels):
         "title": "Descripcion de personalidad",
         "description": aggregated_description
     }
+
+def get_trait_conclusions(trait_levels):
+    """
+    Look up conclusion for each trait.
+    trait_levels: dict mapping trait name (EXT, AGR, CSN, EST, OPN) to level (low, medium, high, excellent)
+    """
+    conclusions = {}
+    
+    # Mapping for file names
+    file_map = {
+        'EXT': 'extraversion_conclusions.json',
+        'AGR': 'agreeableness_conclusions.json',
+        'CSN': 'conscientiousness_conclusions.json',
+        'EST': 'neuroticism_conclusions.json',
+        'OPN': 'openness_conclusions.json'
+    }
+    
+    for trait, level in trait_levels.items():
+        file_name = file_map.get(trait)
+        if not file_name:
+            continue
+            
+        file_path = os.path.join(settings.BASE_DIR, 'static', file_name)
+        
+        try:
+            with open(file_path, 'r') as f:
+                data = json.load(f)
+                trait_concs = data.get(level, [])
+                if trait_concs:
+                    conclusions[trait] = {
+                        "conclusion": random.choice(trait_concs),
+                        "level": level
+                    }
+        except Exception:
+            continue
+            
+    return conclusions

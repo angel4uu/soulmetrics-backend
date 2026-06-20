@@ -6,8 +6,10 @@ from .serializers import RegisterSerializer, PredictionInputSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 from .services import PredictionService
-from .models import PredictionHistory
+from .models import PredictionHistory, PersonalityProfile
 from common.utils import get_test_questions
+from .tasks import update_personality_profile
+from django.utils import timezone
 
 class RegisterView(generics.CreateAPIView):
     queryset = get_user_model().objects.all()
@@ -102,3 +104,62 @@ class ProfileView(APIView):
         user.save()
 
         return Response({"message": "Profile updated"})
+
+class PersonalityProfileView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        # 0. TODO: Exec update_personality_profile
+        # TODO: Implement async execution (Celery)
+        update_personality_profile(request.user)
+
+        # 1. Query user related PersonalityProfile
+        try:
+            profile = PersonalityProfile.objects.get(user=request.user)
+
+            # 3. If yes continue
+            # 4. Return has_personality_profile True and PersonalityProfile in expected json structure
+
+            days_active = (timezone.now() - profile.first_test_date).days
+
+            return Response({
+                "id": profile.id,
+                "user_id": profile.user_id,
+                "has_personality_profile": True,
+                "last_updated": profile.updated_at,
+                "report_metadata": {
+                    "total_tests_taken": profile.total_tests_taken,
+                    "first_test_date": profile.first_test_date,
+                    "days_active": days_active,
+                    "primary_dominant_trait": profile.primary_dominant_trait,
+                    "highest_variance_trait": profile.highest_variance_trait
+                },
+                "ai_conclusions": {
+                    "summary": profile.ai_summary,
+                    "trends_analysis": profile.ai_trends_analysis,
+                    "recommendation": profile.ai_recommendation
+                },
+                "traits_conclusions":{
+                    "Openness": profile.openness_conclusions,
+                    "Conscientiousness": profile.conscientiousness_conclusions,
+                    "Extraversion": profile.extraversion_conclusions,
+                    "Agreeableness": profile.agreeableness_conclusions,
+                    "Neuroticism": profile.neuroticism_conclusions
+                },
+                "historical_baselines": {
+                    "first_test_scores": profile.first_test_scores,
+                    "latest_test_scores": profile.latest_test_scores
+                },
+                "graphics_data": profile.historical_graphics_data
+            }, status=status.HTTP_200_OK)
+
+        except PersonalityProfile.DoesNotExist:
+            # 2. if none, return has_personality_profile False and variable with all rest empty fields
+            return Response({
+                "has_personality_profile": False,
+                "report_metadata": {},
+                "ai_conclusions": {},
+                "traits_conclusions": {},
+                "historical_baselines": {},
+                "graphics_data": {}
+            }, status=status.HTTP_200_OK)

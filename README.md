@@ -192,6 +192,7 @@ Compiles data components into an printable executive dossier. It references hist
 {
   "id": 88,
   "user_id": 15,
+  "has_personality_profile": True,
   "last_updated": "2026-06-13T14:35:12Z",
   "report_metadata": {
     "total_tests_taken": 4,
@@ -204,6 +205,33 @@ Compiles data components into an printable executive dossier. It references hist
     "summary": "Your profile shows strong stability in Agreeableness, but a fascinating recent spike in Extraversion and Conscientiousness.",
     "trends_analysis": "As your Neuroticism dropped over the last 3 tests, your Extraversion naturally rose, suggesting you are feeling more confident in social settings.",
     "recommendation": "Leverage your high Openness to try a new hobby or project that requires teamwork."
+  },
+  "traits_conclusions":{
+    "Openness": {
+      "overall_percentage":"0.87",
+      "level":"high",
+      "conclusion":"Una alta apertura indica un alto nivel de curiosidad y una preferencia por la novedad y la variedad. Probablemente posees una imaginación vívida y una apreciación por el arte y la belleza."
+    },
+    "Conscientiousness": {
+      "overall_percentage":"0.97",
+      "level":"excellent",
+      "conclusion":"Una responsabilidad moderadamente alta sugiere que eres una persona organizada, confiable y disciplinada, mientras mantienes cierta flexibilidad en tus rutinas diarias."
+    },
+    "Extraversion": {
+      "overall_percentage":"0.37",
+      "level":"medium",
+      "conclusion":"Tu puntuación refleja una naturaleza ambivertida: te sientes cómodo en entornos sociales, pero valoras mucho la soledad y el pensamiento independiente para recargar energías."
+    },
+    "Agreeableness": {
+      "overall_percentage":"0.51",
+      "level":"medium",
+      "conclusion":"Tiendes a ser compasivo, cooperativo y digno de confianza. Valoras la armonía social y, a menudo, pones las necesidades de los demás antes que tus propios intereses competitivos."
+    },
+    "Neuroticism": {
+      "overall_percentage":"0.10",
+      "level":"low",
+      "conclusion":"Una puntuación baja aquí indica estabilidad emocional y resiliencia. Probablemente mantienes la calma bajo presión y eres menos propenso a experimentar emociones negativas."
+    },
   },
   "historical_baselines": {
     "first_test_scores": {

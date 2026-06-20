@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RegisterView, LogoutView, PredictionView, HistoryView, ProfileView, QuestionsView
+from .views import RegisterView, LogoutView, PredictionView, HistoryView, ProfileView, QuestionsView, PersonalityProfileView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
@@ -11,4 +11,5 @@ urlpatterns = [
     path("predict/", PredictionView.as_view()),
     path("history/", HistoryView.as_view(), name="history"),
     path("questions/", QuestionsView.as_view(), name="questions"),
+    path("profile/personality/", PersonalityProfileView.as_view(), name="personality_profile"),
 ]

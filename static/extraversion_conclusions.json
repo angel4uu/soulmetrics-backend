@@ -1,0 +1,18 @@
+{
+    "low": [
+        "Disfrutas de momentos significativos de introspección y prefieres actividades tranquilas que te permitan recargar energías en soledad.",
+        "Tu estilo se inclina hacia la reflexión profunda y la apreciación de entornos pausados, donde te sientes más cómodo y auténtico."
+    ],
+    "medium": [
+        "Te sientes cómodo navegando situaciones sociales, aunque valoras significativamente tus momentos de calma para procesar tus pensamientos e ideas.",
+        "Muestras un equilibrio ambivertido; participas activamente cuando es necesario, pero proteges tu espacio personal para recargar tu bienestar."
+    ],
+    "high": [
+        "Eres muy sociable, disfrutas activamente de la compañía de otros y sueles ser una fuente de energía y entusiasmo en tus grupos sociales.",
+        "Te caracterizas por tu vitalidad y tu facilidad para conectar con las personas, encontrando en la interacción social un impulso constante para tu bienestar."
+    ],
+    "excellent": [
+        "Tu capacidad para conectar con los demás es asombrosa, convirtiéndote naturalmente en el catalizador social de cualquier entorno en el que te encuentras.",
+        "Irradias una energía vibrante y contagiosa que inspira a quienes te rodean, facilitando conexiones profundas y momentos memorables con gran facilidad."
+    ]
+}
