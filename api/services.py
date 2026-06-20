@@ -6,11 +6,13 @@ from django.conf import settings
 from .models import PredictionHistory
 from common.utils import get_trait_description
 
+# Load model once at the module level when the worker starts
+model_path = os.path.join(settings.BASE_DIR, "best_model.pkl")
+model = joblib.load(model_path)
+
 class PredictionService:
     def execute_model(self, model_params):
-        # Path to model
-        model_path = os.path.join(settings.BASE_DIR, "best_model.pkl")
-        model = joblib.load(model_path)
+        # Use the already loaded 'model' variable
 
         # Expected features from training (order matters)
         feature_columns = [
