@@ -37,6 +37,7 @@ class PredictionView(APIView):
             service = PredictionService()
             prediction_history = service.get_prediction(request.user, serializer.validated_data)
 
+
             return Response({
                 "status": "success",
                 "personality_prediction": prediction_history.predicted_scores,
@@ -49,4 +50,47 @@ class PredictionView(APIView):
             return Response({
                 'error': str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
+            
 
+class HistoryView(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = None  # no necesitas serializer aún
+
+    def get(self, request):
+        history = PredictionHistory.objects.filter(user=request.user).order_by('-created_at')
+
+        data = []
+        for h in history:
+            data.append({
+                "id": h.id,
+                "answers_data": h.answers_data,
+                "predicted_scores": h.predicted_scores,
+                "trait_descriptions": h.trait_descriptions,
+                "graphics_data": h.graphics_data,
+                "created_at": h.created_at
+            })
+
+        page = self.paginate_queryset(data)
+        return self.get_paginated_response(page)
+
+class ProfileView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        user = request.user
+        return Response({
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "age": user.age,
+            "occupation": user.occupation
+        })
+
+    def put(self, request):
+        user = request.user
+
+        user.age = request.data.get("age", user.age)
+        user.occupation = request.data.get("occupation", user.occupation)
+        user.save()
+
+        return Response({"message": "Profile updated"})
