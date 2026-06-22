@@ -63,13 +63,6 @@ The database structure relies on text separations and `JSONField` allocations to
 * `edad`: `integer`
 * `ocupacion`: `string`
 
-### `Question` (Questionnaire Module)
-
-* `id`: `integer pk`
-* `code`: `string` (e.g., `'EST1'`, `'AGR2'`)
-* `text`: `string` (e.g., `"I have a rich vocabulary."`)
-* `category`: `string` (Choices: `'O'`, `'C'`, `'E'`, `'A'`, `'N'`)
-
 ### `PredictionHistory` (Prediction Module)
 
 * `id`: `integer pk`
