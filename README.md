@@ -129,7 +129,7 @@ Compiles data components into an printable executive dossier. It references hist
 
 ### Prediction & Diagnostics Module
 
-* `POST /api/predict/`: Accepts the payload containing 15 question answers and response times. Runs inference on `best_model.pkl`, builds immediate graphic variables, pulls static definitions, creates history records, triggers the async task, and returns immediate analysis payload results.
+* `POST /api/predict/`: Accepts the payload containing 15 question answers and response times. Sends request to an external model service, builds immediate graphic variables, pulls static definitions, creates history records, triggers the async task, and returns immediate analysis payload results.
 * `GET /api/history/`: Provides a list of the user's past `PredictionHistory` records, sorted chronologically with pagination.
 
 ### Personality Insights Module

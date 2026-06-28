@@ -1,67 +1,33 @@
-import joblib
 import os
-import pandas as pd
+import requests
 import numpy as np
 from django.conf import settings
 from .models import PredictionHistory
 from common.utils import get_trait_description
 
-# Cache for the model to ensure it is only loaded once
-_model_cache = None
-
-def _get_model():
-    """Helper to load the model lazily."""
-    global _model_cache
-    if _model_cache is None:
-        model_path = os.path.join(settings.BASE_DIR, "best_model.pkl")
-        _model_cache = joblib.load(model_path)
-    return _model_cache
-
 class PredictionService:
     def execute_model(self, model_params):
-        # Load the model lazily
-        model = _get_model()
+        # Call external model service prediction endpoint
+        url = settings.MODEL_SERVICE_URL
+        url = url.rstrip("/") + "/predict/"
 
-        # Expected features from training (order matters)
-        feature_columns = [
-            "EXT1",
-            "EXT3",
-            "EXT5",
-            "AGR1",
-            "AGR3",
-            "AGR5",
-            "CSN1",
-            "CSN3",
-            "CSN5",
-            "EST1",
-            "EST3",
-            "EST5",
-            "OPN1",
-            "OPN3",
-            "OPN5",
-        ]
+        response = requests.post(url, json=model_params)
+        print(f"Model service response: {response.status_code}, {response.text}")
+        response.raise_for_status()
 
-        # Ensure correct order and fill missing
-        input_vector = [model_params.get(feat, 0) for feat in feature_columns]
-
-        # Reshape to 2D array (1 sample, n features)
-        input_array = np.array(input_vector).reshape(1, -1)
-
-        # Make prediction (returns 5 scores)
-        prediction = model.predict(input_array)[0]
+        prediction = response.json()
 
         # Rasgo names
         rasgo_names = ['EXT', 'AGR', 'CSN', 'EST', 'OPN']
 
-        # Return scores clamped 1-5, scaled to 1-10
+        # Return scores clamped 1-10
         result = {}
-        for i, rasgo in enumerate(rasgo_names):
-            # Clamping to 1-5 (based on training range) and scaling to 1-10
-            valor_clamp = float(np.clip(prediction[i], 1.0, 5.0))
-            result[rasgo] = round(valor_clamp * 2, 2)
+        for rasgo in rasgo_names:
+            score = prediction.get(rasgo, 0.0)
+            # Clamping to 1-10
+            result[rasgo] = round(float(np.clip(score, 1.0, 10.0)), 2)
 
         return result
-
 
     def get_prediction(self, user, model_params):
         # 1. execute_model()
