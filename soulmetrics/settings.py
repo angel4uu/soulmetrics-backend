@@ -131,6 +131,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+MODEL_SERVICE_URL = os.environ.get('MODEL_SERVICE_URL', 'https://angel4uu-soulmetricsmodel.hf.space/')
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
