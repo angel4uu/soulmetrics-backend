@@ -10,6 +10,12 @@ from .models import PredictionHistory, PersonalityProfile
 from common.utils import get_test_questions
 from .tasks import update_personality_profile
 from django.utils import timezone
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+from io import BytesIO
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.pagesizes import letter
 
 class RegisterView(generics.CreateAPIView):
     queryset = get_user_model().objects.all()
@@ -165,3 +171,67 @@ class PersonalityProfileView(APIView):
                 "historical_baselines": {},
                 "graphics_data": {}
             }, status=status.HTTP_200_OK)
+
+
+class PersonalityProfileExportView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+
+        try:
+            profile = PersonalityProfile.objects.get(user=request.user)
+
+        except PersonalityProfile.DoesNotExist:
+            return Response({"error": "Profile not found"}, status=404)
+
+        # ---- PDF RESPONSE ----
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="personality_report.pdf"'
+
+        doc = SimpleDocTemplate(response, pagesize=letter)
+        styles = getSampleStyleSheet()
+
+        content = []
+
+        # TITLE
+        content.append(Paragraph("Personality Report", styles["Title"]))
+        content.append(Spacer(1, 12))
+
+        # SUMMARY
+        content.append(Paragraph("Summary", styles["Heading2"]))
+        content.append(Paragraph(profile.ai_summary or "No summary available", styles["BodyText"]))
+        content.append(Spacer(1, 12))
+
+        # TRAITS
+        content.append(Paragraph("Traits Analysis", styles["Heading2"]))
+
+        traits = {
+            "Openness": profile.openness_conclusions,
+            "Conscientiousness": profile.conscientiousness_conclusions,
+            "Extraversion": profile.extraversion_conclusions,
+            "Agreeableness": profile.agreeableness_conclusions,
+            "Neuroticism": profile.neuroticism_conclusions,
+        }
+
+        for key, value in traits.items():
+            content.append(Paragraph(f"{key}", styles["Heading3"]))
+            content.append(Paragraph(str(value), styles["BodyText"]))
+            content.append(Spacer(1, 8))
+
+        # METADATA
+        content.append(Paragraph("Metadata", styles["Heading2"]))
+
+        days_active = (timezone.now() - profile.first_test_date).days
+
+        meta = f"""
+        Total tests: {profile.total_tests_taken}<br/>
+        Days active: {days_active}<br/>
+        Primary trait: {profile.primary_dominant_trait}<br/>
+        Highest variance: {profile.highest_variance_trait}
+        """
+
+        content.append(Paragraph(meta, styles["BodyText"]))
+
+        doc.build(content)
+
+        return response
